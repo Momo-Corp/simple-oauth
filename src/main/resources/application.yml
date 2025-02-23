@@ -1,0 +1,24 @@
+server:
+  port: 8080
+  http2:
+    enabled: true
+
+logging:
+  level:
+    org.springframework.web: DEBUG
+    org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
+
+
+spring:
+#  profiles:
+#    active: dev
+  mvc:
+    log-request-details: true
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id: ${SPRING_SECURITY_OAUTH2_CLIENT_ID}
+            client-secret: ${SPRING_SECURITY_OAUTH2_CLIENT_SECRET}
+            scope: read:user, user:email

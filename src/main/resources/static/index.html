@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login GitHub</title>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+</head>
+
+<body class="p-10 flex flex-col items-center">
+
+    <div x-data="githubLogin()" x-init="checkLoginStatus()" class="text-center">
+        <!-- <template x-if="!loggedIn"> -->
+        <button @click="login()" class="px-4 py-2 bg-blue-600 text-white rounded">
+            Login with GitHub
+        </button>
+        <button @click="logout()" class="px-4 py-2 bg-blue-600 text-white rounded">
+            Logout
+        </button>
+        <!-- </template> -->
+
+        <!-- <template x-if="loggedIn"> -->
+        <div class="mt-4">
+            <img :src="user.avatar" class="w-16 h-16 rounded-full mx-auto">
+            <p class="mt-2 text-lg font-bold" x-text="user.name"></p>
+        </div>
+        <!-- </template> -->
+    </div>
+
+    <script>
+        function githubLogin() {
+            return {
+                loggedIn: false,
+                user: { name: "", avatar: "" },
+                async login() {
+                    window.location.href = 'http://localhost:8080/oauth2/authorization/github';
+                },
+                async checkLoginStatus() {
+                    try {
+                        let res = await fetch('http://localhost:8080/user', { credentials: "include" });
+                        if (res.ok) {
+                            let data = await res.json();
+                            console.log("User Data:", data);
+                            this.user = JSON.parse(JSON.stringify(data));
+                            this.loggedIn = true;
+                        } else {
+                            this.loggedIn = false;
+                            this.user = { name: "", avatar: "" };
+                        }
+                    } catch (err) {
+                        console.error('Not logged in', err);
+                        this.loggedIn = false;
+                    }
+                },
+                async logout() {
+                    console.log("Logging out...");
+                    try {
+                        let res = await fetch('/logout', { method: "POST", credentials: "include", redirect: "manual" });
+                        console.log("Logout response:", res);
+                        if (res.ok || res.status === 0) { // Status= 0 when spring redirects to /login?logout
+                            this.loggedIn = false;
+                            this.user = { name: "", avatar: "" };
+                            window.location.href = "/"; // Reload page after logout
+                        }
+                    } catch (err) {
+                        console.error("Error logging out:", err);
+                    }
+                },
+                async fetchUser() {
+                    try {
+                        let res = await fetch('http://localhost:8080/user');
+                        if (res.ok) {
+                            let data = await res.json();
+                            console.log("User Data:", data);
+                            this.user = JSON.parse(JSON.stringify(data));
+                            this.loggedIn = true;
+                        }
+                    } catch (err) {
+                        console.error('Not logged in');
+                    }
+                }
+            };
+        }
+
+        document.addEventListener("alpine:init", () => {
+            Alpine.data("githubLogin", () => {
+                let state = githubLogin();
+                state.fetchUser(); // Automatically fetch user on page load
+                return state;
+            });
+        });
+
+    </script>
+</body>
+
+</html>
