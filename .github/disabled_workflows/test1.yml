@@ -1,0 +1,49 @@
+name: test1 for github actions
+
+on:
+  push:
+    branches: [master]  # ou la branche par défaut de votre projet
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Récupérer le code
+      - uses: actions/checkout@v3
+
+      # 2. Installer Java (si vous en avez besoin pour faire un 'mvn package')
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: 17
+
+      # 3. Construire le projet Spring Boot (si besoin)
+      - name: Build the project
+        run: mvn clean package
+
+      # 4. Lancer Docker Compose
+      - name: Start containers
+        run: docker compose up -d  # suppose que votre docker-compose.yml est à la racine
+
+      # 5. Attendre (ou tester) que l'appli soit accessible
+      - name: Wait for the app to be ready
+        run: |
+          # Simple attente de 10s pour l’exemple
+          # (ou vous pouvez faire une boucle de retry/curl)
+          sleep 10
+
+      # 6. Vérifier que la nouvelle page est accessible
+      - name: Check new page
+        run: |
+          # Par exemple si votre service écoute sur 8080
+          curl -s http://localhost:8080/index.html
+          
+          # -f (fail) permet à curl de renvoyer un code d'erreur
+          # si la page est en 4xx ou 5xx.
+
+      # 7. (Facultatif) Arrêter les conteneurs en fin de test
+      - name: Stop containers
+        if: always()
+        run: docker compose down

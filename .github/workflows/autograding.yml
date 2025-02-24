@@ -1,0 +1,62 @@
+name: Auto Grading (Spring Boot + Docker Compose + Pytest)
+
+on:
+  push:
+    branches: [assignement]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: 17
+
+      - name: Build the project
+        run: mvn clean package
+
+      - name: Start Spring Boot
+        run: |
+          nohup mvn spring-boot:run > app.log 2>&1 &
+          echo $! > spring-boot.pid
+
+      - name: Wait for the app to be ready
+        run: |
+          echo "Waiting for Spring Boot to start..."
+          for i in {1..30}; do  # Wait up to 30 seconds
+            curl -s http://localhost:8080/index.html && break
+            echo "Waiting..."
+            sleep 5
+          done
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          playwright install chromium
+      
+      - name: Set GITHUB_PAT as Environment Variable
+        run: echo "MY_GITHUB_PAT=${{ secrets.MY_GITHUB_PAT }}" >> $GITHUB_ENV
+
+      - name: Run Pytest tests
+        run: pytest tests/ --tb=short --maxfail=5 --disable-warnings --junitxml=pytest-report.xml
+
+      - name: Stop spring boot
+        if: always()
+        run: |
+          kill $(cat spring-boot.pid) || true
+
+      - name: Upload Autograding Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: pytest-report
+          path: pytest-report.xml
