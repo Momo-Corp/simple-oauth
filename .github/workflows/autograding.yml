@@ -2,7 +2,7 @@ name: Auto Grading (Spring Boot + Docker Compose + Pytest)
 
 on:
   push:
-    branches: [assignement]
+    branches: [assignment]
 
 jobs:
   build-and-test:

@@ -1,6 +1,9 @@
 # simple oauth authentification with github
 
 - Need to get Client_id and Client_secret : Go to https://github.com/settings/apps and create a new github app
+ - Homepage URL : http://localhost:8080
+ - GitHub App name : choose a name you like
+ - callback URL : http://localhost:8080/login/oauth2/code/github
 - Grab your client_id and client_secret keep it in a local_file, that !! YOU DON'T COMMIT !!
 ```
 simple-auth % cat .env
