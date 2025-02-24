@@ -22,4 +22,10 @@ public class UserController {
             "avatar", principal.getAttribute("avatar_url")
         );
     }
+
+    @GetMapping("/admin")
+    @PreAuthorize("hasRole('ADMIN')") // ✅ Seuls les admins OAuth peuvent accéder
+    public Map<String, Object> adminOnly() {
+        return Map.of("message", "Admin endpoint accessible");
+    }
 }

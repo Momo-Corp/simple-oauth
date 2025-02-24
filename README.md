@@ -22,6 +22,13 @@ export GITHUB_PAT=ghp_xxxYPGEomlkscSwOMuExxxxxx
 source .env
 ```
 
+- test your PAT
+```
+simple-auth % curl -H "Authorization: Bearer $GITHUB_PAT" https://api.github.com/user
+```
+
+You should see you github profile...
+
 - You should be able to run the app now
 - to compile/run for development:
 ```
