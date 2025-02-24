@@ -4,7 +4,7 @@ import requests
 BASE_URL = "https://api.github.com"
 
 # Utilise `GITHUB_TOKEN` en CI/CD, sinon utilise `GITHUB_PAT` pour les tests en local
-GITHUB_TOKEN = os.getenv("GITHUB_TOKEN") or os.getenv("MY_GITHUB_PAT")
+GITHUB_TOKEN = os.getenv("MY_GITHUB_PAT")
 
 def test_github_oauth():
     """Teste l'authentification GitHub OAuth avec le bon token selon l'environnement"""
