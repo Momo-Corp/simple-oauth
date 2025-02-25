@@ -1,5 +1,8 @@
 package com.example.authgithub;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -20,6 +23,10 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 
+import java.util.Optional;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+
+
 import jakarta.servlet.http.HttpServletResponse;
 
 @Configuration
@@ -28,6 +35,8 @@ import jakarta.servlet.http.HttpServletResponse;
 public class SecurityConfig {
 
     CustomOAuth2UserService customOAuth2UserService;
+    @Autowired
+    private ClientRegistrationRepository clientRegistrationRepository;
 
     public SecurityConfig(CustomOAuth2UserService customOAuth2UserService) {
         this.customOAuth2UserService = customOAuth2UserService;
@@ -50,9 +59,18 @@ public class SecurityConfig {
         return jwtAuthenticationConverter;
     }
 
+    
+
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        String baseUrl = Optional.ofNullable(System.getenv("BASE_URL"))
+                                 .orElse("http://localhost:8080");
+
+        System.out.println("🔹 BASE_URL utilisé : " + baseUrl);
+
+
+
         http
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/", "/counter/**", "/index.html", "/auth/test-token", "/static/**")

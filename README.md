@@ -1,23 +1,79 @@
 # simple oauth authentification with github
 
-- Need to get Client_id and Client_secret : Go to https://github.com/settings/apps and create a new github app
- - Homepage URL : http://localhost:8080
- - GitHub App name : choose a name you like
- - callback URL : http://localhost:8080/login/oauth2/code/github
-- Grab your client_id and client_secret keep it in a local_file, that !! YOU DON'T COMMIT !!
+Remember how OAuth Works and what is the configuration of your server to
+handle Oauth Authentification (see Application.yml is src/resources)
+```
+        registration:
+          github:
+            client-id: ${SPRING_SECURITY_OAUTH2_CLIENT_ID}
+            client-secret: ${SPRING_SECURITY_OAUTH2_CLIENT_SECRET}
+            scope: read:user, user:email
+        provider:
+          github:
+            authorization-uri: https://github.com/login/oauth/authorize
+            token-uri: https://github.com/login/oauth/access_token
+            user-info-uri: https://api.github.com/user
+            redirect-uri: "${BASE_URL}/login/oauth2/code/github"
+```
+
+So wee need a BASE_URL, a client ID and a client secret
+
+## BASE_URL: Your server URL, you are not on localhost
+
+Your URL is:
+```
+echo "https://${CODESPACE_NAME}-8080.app.github.dev"
+```
+
+So BASE_URL is:
+
+```
+export BASE_URL="https://${CODESPACE_NAME}-8080.app.github.dev"
+```
+
+Put that in a file:
+```
+echo 'export BASE_URL="https://${CODESPACE_NAME}-8080.app.github.dev"' > .env
+```
+
+and read it:
+```
+source .env
+echo $BASE_URL
+```
+
+Suppose BASE_URL is : https://momo54-8080.githubpreview.dev
+
+## Client_id and Client_secreat
+
+- Need to get Client_id and Client_secret : Go to https://github.com/settings/apps and create a new github app.
+
+Important Parameters are:
+- Homepage URL : BASE_URL ie. https://momo54-8080.app.github.dev for example 
+- GitHub App name : choose a name you like
+- callback URL : https://momo54-8080.githubpreview.dev/login/oauth2/code/github
+- Disable Webhook
+- ok -> create
+
+You should see CLIENT ID and able to generate a Client Secreet. Do That.
+Grab your client_id and client_secret keep and update your .env, that !! YOU DON'T COMMIT !!
 ```
 simple-auth % cat .env
 export SPRING_SECURITY_OAUTH2_CLIENT_ID=xxxlickHtX0lR8xxxx
 export SPRING_SECURITY_OAUTH2_CLIENT_SECRET=xxxx4be11e11899c035bdxxxxx
 ```
-- from https://github.com/settings/tokens, create also a Personal Access Token (PAT)
-- check read:user, read:email and carefull about expiration date
+- from https://github.com/settings/tokens, create also a Personal Access Token (PAT) Classic
+Parameter
+- check read:user, read:email and 
+- expiration date
+- create
 - Put it in the same local file that !! YOU DON'T COMMIT !!
 ```
 simple-auth % cat .env
+export BASE_URL = ....
 export SPRING_SECURITY_OAUTH2_CLIENT_ID=xxxlickHtX0lR8xxxx
 export SPRING_SECURITY_OAUTH2_CLIENT_SECRET=xxxx4be11e11899c035bdxxxxx
-export GITHUB_PAT=ghp_xxxYPGEomlkscSwOMuExxxxxx
+export MY_GITHUB_PAT=ghp_xxxYPGEomlkscSwOMuExxxxxx
 ```
 
 - instanciate these environment variable
@@ -27,7 +83,7 @@ source .env
 
 - test your PAT
 ```
-simple-auth % curl -H "Authorization: Bearer $GITHUB_PAT" https://api.github.com/user
+simple-auth % curl -H "Authorization: Bearer $MY_GITHUB_PAT" https://api.github.com/user
 ```
 
 You should see you github profile...

@@ -37,11 +37,11 @@
                 user: { name: "", avatar: "" },
                 admin: { message: "not admin" },
                 async login() {
-                    window.location.href = 'http://localhost:8080/oauth2/authorization/github';
+                    window.location.href = window.location.origin+'/oauth2/authorization/github';
                 },
                 async checkLoginStatus() {
                     try {
-                        let res = await fetch('http://localhost:8080/user', { credentials: "include" });
+                        let res = await fetch('/user', { credentials: "include" });
                         if (res.ok) {
                             let data = await res.json();
                             console.log("User Data:", data);
@@ -57,7 +57,7 @@
                         this.loggedIn = false;
                     }
                     try {
-                        let res = await fetch('http://localhost:8080/admin');
+                        let res = await fetch('/admin');
                         if (res.ok) {
                             let data = await res.json();
                             console.log("admin Data:", data);
@@ -86,7 +86,7 @@
                 },
                 async fetchUser() {
                     try {
-                        let res = await fetch('http://localhost:8080/user');
+                        let res = await fetch('/user');
                         if (res.ok) {
                             let data = await res.json();
                             console.log("User Data:", data);
