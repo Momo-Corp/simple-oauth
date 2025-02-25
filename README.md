@@ -62,7 +62,6 @@ Important Parameters are:
 You should see CLIENT ID and able to generate a Client Secret. Do That.
 Grab your client_id and client_secret keep and update your .env, that !! YOU DON'T COMMIT !!
 ```
-simple-auth % cat .env
 export SPRING_SECURITY_OAUTH2_CLIENT_ID=xxxlickHtX0lR8xxxx
 export SPRING_SECURITY_OAUTH2_CLIENT_SECRET=xxxx4be11e11899c035bdxxxxx
 ```
@@ -73,7 +72,6 @@ Parameters:
 - create
 - Put it in the same local file that !! YOU DON'T COMMIT !!
 ```
-simple-auth % cat .env
 export BASE_URL = ....
 export SPRING_SECURITY_OAUTH2_CLIENT_ID=xxxlickHtX0lR8xxxx
 export SPRING_SECURITY_OAUTH2_CLIENT_SECRET=xxxx4be11e11899c035bdxxxxx
@@ -87,7 +85,7 @@ source .env
 
 - test your PAT
 ```
-simple-auth % curl -H "Authorization: Bearer $MY_GITHUB_PAT" https://api.github.com/user
+curl -H "Authorization: Bearer $MY_GITHUB_PAT" https://api.github.com/user
 ```
 
 You should see you github profile...
