@@ -1,6 +1,6 @@
 # simple oauth authentification with github
 
-Remember how OAuth [Works]([https://docs.google.com/presentation/d/1ovkzK-z_02cwApNDEsSs1lO30TgjZ1t5-jZUUl8UrL0/edit?usp=sharing]) and what is the configuration of your server to
+Remember how OAuth [Works](https://docs.google.com/presentation/d/1ovkzK-z_02cwApNDEsSs1lO30TgjZ1t5-jZUUl8UrL0/edit?usp=sharing) and what is the configuration of your server to
 handle Oauth Authentification (see [Application.yml](/src/main/resources/application.yml)) is src/resources)
 ```
         registration:
@@ -15,7 +15,7 @@ handle Oauth Authentification (see [Application.yml](/src/main/resources/applica
             user-info-uri: https://api.github.com/user
 ```
 
-So wee need a BASE_URL, a client ID and a client secret
+So wee need a BASE_URL, a client ID and a client secret. 
 
 ## BASE_URL: Your server URL
 
@@ -104,7 +104,7 @@ mvn clean install  ; mvn spring-boot:run
 - Check the you can really login with github from the web interface: Open you browser with your BASE_URL
 
 
-- and run the tests
+- and run the tests (carefull with your environment variables...)
 ```
 pytest tests
 ```
