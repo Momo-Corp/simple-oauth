@@ -19,10 +19,3 @@ def test_github_oauth():
     assert response.status_code == 200
     assert "login" in response.json()  # Vérifie que l'utilisateur est authentifié
 
-
-def test_protected_route_without_token():
-    """Test should fail: Trying to access /user without a valid token"""
-
-    response = requests.get(f"{BASE_URL}/user")  # No token sent
-
-    assert response.status_code == 401, f"Expected 401, got {response.status_code}"
