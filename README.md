@@ -109,6 +109,8 @@ mvn clean install  ; mvn spring-boot:run
 pytest tests
 ```
 
+How these tests can run ?? Users should login no ??
+
 # Where are things
 - The index.html is at [src/main/resources/static](/src/main/resources/static/index.html)
 - the backend in [/src/main/java/com/example/authgithub](/src/main/java/com/example/authgithub)
@@ -118,4 +120,4 @@ pytest tests
 # what to do ??
 - Able to login with github from the browser
 - Change things to pass the tests
-- Push your changes 
+- Push your changes (Don't commit/push .env !!)
