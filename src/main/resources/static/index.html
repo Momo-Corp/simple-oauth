@@ -11,13 +11,9 @@
 <body class="p-10 flex flex-col items-center">
 
     <div x-data="githubLogin()" x-init="checkLoginStatus()" class="text-center">
-        <!-- <template x-if="!loggedIn"> -->
             <button @click="login()" class="px-4 py-2 bg-blue-600 text-white rounded">
                 Login with GitHub
             </button>
-        <!-- </template> -->
-
-        <!-- <template x-if="loggedIn"> -->
             <button @click="logout()" class="px-4 py-2 bg-blue-600 text-white rounded">
                 Logout
             </button>
@@ -27,7 +23,6 @@
                 <p class="mt-2 text-lg font-bold" x-text="user.name"></p>
                 <p class="mt-2 text-lg font-bold" x-text="admin.message"></p>
             </div>
-        <!-- </template> -->
     </div>
 
     <script>
@@ -84,32 +79,8 @@
                         console.error("Error logging out:", err);
                     }
                 },
-                async fetchUser() {
-                    try {
-                        let res = await fetch('/user');
-                        if (res.ok) {
-                            let data = await res.json();
-                            console.log("User Data:", data);
-                            this.user.name = data.name;
-                            this.user.avatar = data.avatar;
-                            this.loggedIn = true;
-                        }
-                    } catch (err) {
-                        console.error('Not logged in');
-                    }
-
-
-                }
             };
         }
-
-        // document.addEventListener("alpine:init", () => {
-        //     Alpine.data("githubLogin", () => {
-        //         let state = githubLogin();
-        //         state.fetchUser(); // Automatically fetch user on page load
-        //         return state;
-        //     });
-        // });
 
     </script>
 </body>
