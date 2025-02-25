@@ -1,7 +1,7 @@
 # simple oauth authentification with github
 
-Remember how OAuth Works and what is the configuration of your server to
-handle Oauth Authentification (see Application.yml is src/resources)
+Remember how OAuth [Works]([https://docs.google.com/presentation/d/1ovkzK-z_02cwApNDEsSs1lO30TgjZ1t5-jZUUl8UrL0/edit?usp=sharing]) and what is the configuration of your server to
+handle Oauth Authentification (see [Application.yml](/src/main/resources/application.yml)) is src/resources)
 ```
         registration:
           github:
@@ -13,14 +13,14 @@ handle Oauth Authentification (see Application.yml is src/resources)
             authorization-uri: https://github.com/login/oauth/authorize
             token-uri: https://github.com/login/oauth/access_token
             user-info-uri: https://api.github.com/user
-            redirect-uri: "${BASE_URL}/login/oauth2/code/github"
 ```
 
 So wee need a BASE_URL, a client ID and a client secret
 
-## BASE_URL: Your server URL, you are not on localhost
+## BASE_URL: Your server URL
 
-Your URL is:
+Remember on codespace, localhost is not reachable from outside the VM. 
+Your base URL for your web server is (carefull to not use the 'gitpreview.dev' suffix  ):
 ```
 echo "https://${CODESPACE_NAME}-8080.app.github.dev"
 ```
@@ -39,10 +39,14 @@ echo 'export BASE_URL="https://${CODESPACE_NAME}-8080.app.github.dev"' > .env
 and read it:
 ```
 source .env
+```
+
+Check everything ok:
+```
 echo $BASE_URL
 ```
 
-Suppose BASE_URL is : https://momo54-8080.githubpreview.dev
+Suppose BASE_URL is : https://momo54-8080.app.github.dev
 
 ## Client_id and Client_secreat
 
@@ -51,11 +55,11 @@ Suppose BASE_URL is : https://momo54-8080.githubpreview.dev
 Important Parameters are:
 - Homepage URL : BASE_URL ie. https://momo54-8080.app.github.dev for example 
 - GitHub App name : choose a name you like
-- callback URL : https://momo54-8080.githubpreview.dev/login/oauth2/code/github
+- callback URL : https://momo54-8080.app.github.dev/login/oauth2/code/github
 - Disable Webhook
 - ok -> create
 
-You should see CLIENT ID and able to generate a Client Secreet. Do That.
+You should see CLIENT ID and able to generate a Client Secret. Do That.
 Grab your client_id and client_secret keep and update your .env, that !! YOU DON'T COMMIT !!
 ```
 simple-auth % cat .env
@@ -63,7 +67,7 @@ export SPRING_SECURITY_OAUTH2_CLIENT_ID=xxxlickHtX0lR8xxxx
 export SPRING_SECURITY_OAUTH2_CLIENT_SECRET=xxxx4be11e11899c035bdxxxxx
 ```
 - from https://github.com/settings/tokens, create also a Personal Access Token (PAT) Classic
-Parameter
+Parameters:
 - check read:user, read:email and 
 - expiration date
 - create
@@ -88,11 +92,17 @@ simple-auth % curl -H "Authorization: Bearer $MY_GITHUB_PAT" https://api.github.
 
 You should see you github profile...
 
-- You should be able to run the app now
+# run the APP
+
+You should be able to run the app now
+
 - to compile/run for development:
 ```
 mvn clean install  ; mvn spring-boot:run
 ```
+
+- Check the you can really login with github from the web interface: Open you browser with your BASE_URL
+
 
 - and run the tests
 ```
@@ -102,9 +112,10 @@ pytest tests
 # Where are things
 - The index.html is at [src/main/resources/static](/src/main/resources/static/index.html)
 - the backend in [/src/main/java/com/example/authgithub](/src/main/java/com/example/authgithub)
-- careful with application.yml
+- careful with [application.yml](/src/main/resources/application.yml)
 
 
 # what to do ??
+- Able to login with github from the browser
 - Change things to pass the tests
 - Push your changes 
