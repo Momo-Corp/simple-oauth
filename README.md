@@ -92,6 +92,12 @@ simple-auth % curl -H "Authorization: Bearer $MY_GITHUB_PAT" https://api.github.
 
 You should see you github profile...
 
+- Add MY_GITHUB_PAT as a github secret for your repository
+- Go to your REPO settings
+- Create a new repository secret (for secret)
+ - Name is MY_GIT_HUB_PAT
+ - value is the one you have in your .env
+
 # run the APP
 
 You should be able to run the app now
@@ -120,4 +126,6 @@ How these tests can run ?? Users should login no ??
 # what to do ??
 - Able to login with github from the browser
 - Change things to pass the tests
-- Push your changes (Don't commit/push .env !!)
+- Push your changes
+ - (Don't commit/push .env !!)
+ - Don't forget to add MY_GITHUB_PAT as a github secret (otherwise test fails)
