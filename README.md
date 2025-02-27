@@ -65,6 +65,11 @@ Grab your client_id and client_secret keep and update your .env, that !! YOU DON
 export SPRING_SECURITY_OAUTH2_CLIENT_ID=xxxlickHtX0lR8xxxx
 export SPRING_SECURITY_OAUTH2_CLIENT_SECRET=xxxx4be11e11899c035bdxxxxx
 ```
+
+## Personal Access Token (PAT)
+
+Github PAT allows you to acess directly the GitHub "Profile" server.
+
 - from https://github.com/settings/tokens, create also a Personal Access Token (PAT) Classic
 Parameters:
 - check read:user, read:email and 
@@ -88,7 +93,7 @@ source .env
 curl -H "Authorization: Bearer $MY_GITHUB_PAT" https://api.github.com/user
 ```
 
-You should see you github profile...
+You should see you github profile... Check if you have an !! avatar_url and a name !!
 
 - Add MY_GITHUB_PAT as a github secret for your repository
 - Go to your REPO settings
