@@ -94,11 +94,11 @@ curl -H "Authorization: Bearer $MY_GITHUB_PAT" https://api.github.com/user
 ```
 
 You should see you github profile... Check if you have an !! avatar_url and a name !!
+Add MY_GITHUB_PAT as a github secret for your repository. This allow to have PAT available during  Github actions.
 
-- Add MY_GITHUB_PAT as a github secret for your repository
 - Go to your REPO settings
 - Create a new repository secret (for secret)
- - Name is MY_GIT_HUB_PAT
+ - Name is MY_GITHUB_PAT
  - value is the one you have in your .env
 
 # run the APP
