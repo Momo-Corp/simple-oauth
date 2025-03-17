@@ -72,6 +72,22 @@ def test_increment_access_with_invalid_token():
 
     assert response.status_code in [401, 403], "❌ access not protected !"
 
+def test_user_access_with_valid_token():
+    """Teste l'accès à /admin avec un token JWT valide"""
+    
+    jwt_token = get_test_jwt()  # 🔥 Récupère un token JWT
+
+    headers = {
+        "Authorization": f"Bearer {jwt_token}",  # 🔥 Envoie le token dans l'authentification
+        "Accept": "application/json"
+    }
+    
+    response = requests.get(f"{APP_URL}/user", headers=headers)  # 🔥 Teste l'endpoint protégé
+
+    print(f"🔍 DEBUG: Status = {response.status_code}")
+    print(f"🔍 DEBUG: Body = {response.text}")
+
+    assert response.status_code == 200, f"❌ Accès refusé : {response.status_code}"
 
 
 if __name__ == "__main__":
