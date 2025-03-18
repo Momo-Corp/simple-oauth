@@ -39,7 +39,7 @@
                         if (res.ok) {
                             let data = await res.json();
                             console.log("User Data:", data);
-                            this.user.name = data.name;
+                            this.user.name = data.username;
                             this.loggedIn = true;
                         } else {
                             this.loggedIn = false;
