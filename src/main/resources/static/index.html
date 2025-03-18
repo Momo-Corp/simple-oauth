@@ -22,9 +22,11 @@
                 <p class="mt-2 text-lg font-bold" x-text="user.name"></p>
                 <p class="mt-2 text-lg font-bold" x-text="admin.message"></p>
             </div>
+
     </div>
 
     <script>
+        fetch('/farm').then(response => console.log("not logged in:", response.status))
         function githubLogin() {
             return {
                 loggedIn: false,
@@ -41,6 +43,7 @@
                             console.log("User Data:", data);
                             this.user.name = data.username;
                             this.loggedIn = true;
+                            fetch('/farm').then(response => response.json()).then(data => console.log("logged in:", data))
                         } else {
                             this.loggedIn = false;
                             this.user = { name: "" };
