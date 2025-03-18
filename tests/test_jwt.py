@@ -84,7 +84,7 @@ def test_increment_access_with_valid_token():
 
     response = requests.post(f"{APP_URL}/counter/increment",headers=headers)
 
-    assert response.status_code in [401, 403], "❌ access not protected !"
+    assert response.status_code == 200, "❌ access refused  !"
 
 
 def test_user_access_with_valid_token():
