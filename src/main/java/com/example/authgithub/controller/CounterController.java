@@ -1,8 +1,11 @@
-package com.example.authgithub;
+package com.example.authgithub.controller;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import com.example.authgithub.service.UserService;
+
 import org.springframework.security.access.prepost.PreAuthorize;
 
 
@@ -26,6 +29,8 @@ public class CounterController {
     @PostMapping("/increment")
     @PreAuthorize("isAuthenticated()")
     public void incrementCounter(Authentication authentication) {
+        String name=userService.getUsername(authentication);
+        System.out.println(name+ " is Incrementing counter");
         count=count+1;
     }
 }

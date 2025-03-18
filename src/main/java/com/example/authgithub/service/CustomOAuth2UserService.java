@@ -1,4 +1,4 @@
-package com.example.authgithub;
+package com.example.authgithub.service;
 
 
 import org.springframework.security.core.GrantedAuthority;
@@ -7,6 +7,8 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.stereotype.Service;
+
+import com.example.authgithub.CustomOAuth2User;
 
 import java.util.*;
 

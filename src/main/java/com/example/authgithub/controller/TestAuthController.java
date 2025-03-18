@@ -1,4 +1,4 @@
-package com.example.authgithub;
+package com.example.authgithub.controller;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -17,7 +17,7 @@ import javax.crypto.SecretKey;
 @RequestMapping("/auth")
 public class TestAuthController {
 
-    static final SecretKey SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256); // 🔥 Génère une clé sécurisée
+    public static final SecretKey SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256); // 🔥 Génère une clé sécurisée
 
     @GetMapping("/test-token")
     public String getTestToken() {
