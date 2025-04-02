@@ -1,3 +1,35 @@
+
+# Welcome to my Farm !
+
+![Vache heureuse](src/main/resources/static/image.png)
+
+# compile and launch the server
+
+`export MY_GITHUB_PAT=tagada`
+
+```
+mvn clean install
+mvn spring-boot-run
+```
+
+# run the tests
+```
+pytest tests/test_farm.py
+=================================== 4 passed in 0.13s
+```
+
+# launch front-end
+
+`http://localhost:8080`
+
+
+# using test-token on command-line
+```
+TOKEN=$(curl -s http://localhost:8080/auth/test-token)
+curl -H "Authorization: Bearer $TOKEN" http://localhost:8080/farm/cow
+{"id":1,"name":"Bessie","hungry":true}% 
+```
+
 # simple oauth authentification with github
 
 Remember how OAuth [Works](https://docs.google.com/presentation/d/1ovkzK-z_02cwApNDEsSs1lO30TgjZ1t5-jZUUl8UrL0/edit?usp=sharing) and what is the configuration of your server to

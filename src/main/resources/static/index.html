@@ -1,89 +1,67 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login GitHub</title>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <meta charset="UTF-8">
+  <title>Ma Ferme 🐄</title>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
+<body class="p-4" x-data="farmApp()">
 
-<body class="p-10 flex flex-col items-center">
+  <h1 class="text-xl font-bold mb-4">Bienvenue à la Ferme 🐮</h1>
 
-    <div x-data="githubLogin()" x-init="checkLoginStatus()" class="text-center">
-            <button @click="login()" class="px-4 py-2 bg-blue-600 text-white rounded">
-                Login with GitHub
-            </button>
-            <button @click="logout()" class="px-4 py-2 bg-blue-600 text-white rounded">
-                Logout
-            </button>
+  <button @click="login" class="mb-2 px-4 py-2 bg-blue-500 text-white rounded">🔐 Se connecter</button>
+  <p x-text="token ? 'Token récupéré ✔️' : ''" class="mb-4 text-green-600 font-mono"></p>
 
-            <div class="mt-4">
-                <p class="mt-2 text-lg font-bold" x-text="user.name"></p>
-                <p class="mt-2 text-lg font-bold" x-text="admin.message"></p>
-            </div>
+  <div x-show="token" class="space-x-2">
+    <button @click="getCow" class="px-3 py-1 bg-gray-200 rounded">🐄 Voir la vache</button>
+    <button @click="feedCow" class="px-3 py-1 bg-green-200 rounded">🍽️ Nourrir</button>
+    <button @click="hungryCow" class="px-3 py-1 bg-red-200 rounded">😩 Affamer</button>
+  </div>
 
-    </div>
+  <pre class="mt-4 bg-gray-100 p-2 rounded" x-text="JSON.stringify(response, null, 2)"></pre>
 
-    <script>
-        fetch('/farm').then(response => console.log("not logged in:", response.status))
-        function githubLogin() {
-            return {
-                loggedIn: false,
-                user: { name: ""},
-                admin: { message: "not admin" },
-                async login() {
-                    window.location.href = window.location.origin+'/oauth2/authorization/github';
-                },
-                async checkLoginStatus() {
-                    try {
-                        let res = await fetch('/user', { credentials: "include" });
-                        if (res.ok) {
-                            let data = await res.json();
-                            console.log("User Data:", data);
-                            this.user.name = data.username;
-                            this.loggedIn = true;
-                            fetch('/farm').then(response => response.json()).then(data => console.log("logged in:", data))
-                        } else {
-                            this.loggedIn = false;
-                            this.user = { name: "" };
-                        }
-                    } catch (err) {
-                        console.error('Not logged in', err);
-                        this.loggedIn = false;
-                    }
-                    try {
-                        let res = await fetch('/admin');
-                        if (res.ok) {
-                            let data = await res.json();
-                            console.log("admin Data:", data);
-                            console.log("message Data:", data.message);
-                            this.admin = { message: data.message };
-                            console.log("admin:", this.admin)
-                        }
-                    } catch (err) {
-                        console.error('Not admin:', err);
-                    }
-                },
-                async logout() {
-                    console.log("Logging out...");
-                    try {
-                        let res = await fetch('/logout', { method: "POST", credentials: "include", redirect: "manual" });
-                        console.log("Logout response:", res);
-                        if (res.ok || res.status === 0) { // Status= 0 when spring redirects to /login?logout
-                            this.loggedIn = false;
-                            this.user = { name: "" };
-                            this.admin = { message: "not admin" };
-                            window.location.href = "/"; // Reload page after logout
-                        }
-                    } catch (err) {
-                        console.error("Error logging out:", err);
-                    }
-                },
-            };
+  <script>
+    function farmApp() {
+      return {
+        token: null,
+        response: null,
+
+        async login() {
+          try {
+            const res = await fetch('http://localhost:8080/auth/test-token');
+            this.token = await res.text();
+          } catch (err) {
+            console.error('Erreur lors du login:', err);
+          }
+        },
+
+        async callApi(method, url) {
+          try {
+            const res = await fetch(`http://localhost:8080${url}`, {
+              method,
+              headers: {
+                'Authorization': `Bearer ${this.token}`
+              }
+            });
+            this.response = await res.json();
+          } catch (err) {
+            this.response = { error: 'Erreur API', details: err.message };
+          }
+        },
+
+        getCow() {
+          this.callApi('GET', '/farm/cow');
+        },
+
+        feedCow() {
+          this.callApi('POST', '/farm/cow/feed');
+        },
+
+        hungryCow() {
+          this.callApi('POST', '/farm/cow/hungry');
         }
-
-    </script>
+      };
+    }
+  </script>
 </body>
-
 </html>

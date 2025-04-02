@@ -3,6 +3,7 @@ package com.example.authgithub.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.authgithub.entity.Cow;
 import com.example.authgithub.entity.Farm;
 import com.example.authgithub.repository.FarmRepository;
 
@@ -27,6 +28,8 @@ public class FarmService {
 
         // Sinon, créer une nouvelle ferme
         Farm newFarm = new Farm(username, "My Farm", "Unknown Location");
+        Cow newCow = new Cow("Bessie");
+        newFarm.setCow(newCow);
         return farmRepository.save(newFarm);
     }
 }

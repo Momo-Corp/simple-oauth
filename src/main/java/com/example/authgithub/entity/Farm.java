@@ -1,7 +1,11 @@
 package com.example.authgithub.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -13,6 +17,11 @@ public class Farm {
 
     private String name;
     private String location;
+
+    @OneToOne(mappedBy = "farm", cascade = CascadeType.ALL, 
+        orphanRemoval = true)
+    @JsonManagedReference
+    private Cow cow;
 
     // Constructeurs
     public Farm() {}
@@ -32,4 +41,13 @@ public class Farm {
 
     public String getLocation() { return location; }
     public void setLocation(String location) { this.location = location; }
+
+    public void setCow(Cow newCow) {
+        newCow.setFarm(this);
+        this.cow = newCow;
+    }
+
+    public Cow getCow() {
+        return this.cow;
+    }
 }
