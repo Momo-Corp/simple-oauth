@@ -17,6 +17,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtGra
 import org.springframework.security.web.SecurityFilterChain;
 import com.example.authgithub.controller.TestAuthController;
 import com.example.authgithub.service.CustomOAuth2UserService;
+import org.springframework.security.config.Customizer;
 
 import java.util.Optional;
 import jakarta.servlet.http.HttpServletResponse;
@@ -58,6 +59,7 @@ public class SecurityConfig {
         System.out.println("🔹 BASE_URL utilisé : " + baseUrl);
 
         http
+                .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/", "/counter/**", "/index.html", "/auth/test-token", "/static/**").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()

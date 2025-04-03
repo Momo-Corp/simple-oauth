@@ -71,6 +71,7 @@
 
   <!-- Script Alpine -->
   <script>
+    const API_BASE = window.location.origin;
     function farmApp() {
       return {
         token: null,
@@ -84,7 +85,7 @@
 
         async login() {
           try {
-            const res = await fetch('http://localhost:8080/auth/test-token');
+            const res = await fetch('/auth/test-token');
             this.token = await res.text();
           } catch (err) {
             console.error('Erreur lors du login:', err);
@@ -105,7 +106,7 @@
               options.body = JSON.stringify(body);
             }
 
-            const res = await fetch(`http://localhost:8080${url}`, options);
+            const res = await fetch(`${url}`, options);
             return await res.json();
           } catch (err) {
             return { error: 'Erreur API', details: err.message };
