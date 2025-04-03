@@ -1,10 +1,14 @@
 package com.example.authgithub.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
@@ -17,6 +21,12 @@ public class Farm {
 
     private String name;
     private String location;
+
+    @OneToMany(mappedBy = "farm", cascade = CascadeType.ALL, 
+            orphanRemoval = true)
+    @JsonManagedReference
+    private List<Chicken> chickens = new ArrayList<>();
+
 
     @OneToOne(mappedBy = "farm", cascade = CascadeType.ALL, 
         orphanRemoval = true)
@@ -42,6 +52,12 @@ public class Farm {
     public String getLocation() { return location; }
     public void setLocation(String location) { this.location = location; }
 
+    public void addChicken(Chicken chicken) {
+        chickens.add(chicken);
+        chicken.setFarm(this);
+    }
+
+
     public void setCow(Cow newCow) {
         newCow.setFarm(this);
         this.cow = newCow;
@@ -49,5 +65,9 @@ public class Farm {
 
     public Cow getCow() {
         return this.cow;
+    }
+
+    public List<Chicken> getChickens() {
+        return chickens;
     }
 }

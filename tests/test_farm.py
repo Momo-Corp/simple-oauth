@@ -62,3 +62,14 @@ def test_hungry_cow(headers):
         # Verify the cow is no longer hungry
         updated_farm_data = requests.get(f"{APP_URL}/farm", headers=headers).json()
         assert updated_farm_data["cow"].get("hungry") == True, "Cow is still feed after hungrying"
+
+def test_chicken(headers):
+        # Feed the cow
+        feed_response = requests.get(f"{APP_URL}/farm/chicken", headers=headers)
+        assert feed_response.status_code == 200, f"Failed to get chickens: {feed_response.text}"
+
+        chicken_data =feed_response.json()
+
+        # Verify the cow is no longer hungry
+        assert len(chicken_data)==5
+
