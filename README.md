@@ -5,7 +5,11 @@
 
 # compile and launch the server
 
-`export MY_GITHUB_PAT=tagada`
+```
+export MY_GITHUB_PAT=tagada
+export BASE_URL="https://${CODESPACE_NAME}-8080.app.github.dev"
+```
+
 
 ```
 mvn clean install
