@@ -2,29 +2,85 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Ma Ferme 🐄</title>
+  <title>Ma Ferme 🐄🐔</title>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #f9f9f9;
+      padding: 2rem;
+    }
+
+    button {
+      transition: all 0.2s ease;
+      margin-bottom: 0.5rem;
+    }
+
+    button:hover {
+      transform: scale(1.03);
+    }
+
+    input {
+      margin-bottom: 0.5rem;
+    }
+  </style>
 </head>
-<body class="p-4" x-data="farmApp()">
+<body x-data="farmApp()">
 
-  <h1 class="text-xl font-bold mb-4">Bienvenue à la Ferme 🐮</h1>
+  <h1 class="text-xl font-bold mb-4">Bienvenue à la Ferme 🐮🐔</h1>
 
-  <button @click="login" class="mb-2 px-4 py-2 bg-blue-500 text-white rounded">🔐 Se connecter</button>
+  <!-- Connexion -->
+  <button @click="login" class="px-4 py-2 bg-blue-500 text-white rounded">🔐 Se connecter</button>
   <p x-text="token ? 'Token récupéré ✔️' : ''" class="mb-4 text-green-600 font-mono"></p>
 
-  <div x-show="token" class="space-x-2">
+  <!-- Actions principales -->
+  <div x-show="token" class="space-x-2 mb-6">
     <button @click="getCow" class="px-3 py-1 bg-gray-200 rounded">🐄 Voir la vache</button>
-    <button @click="feedCow" class="px-3 py-1 bg-green-200 rounded">🍽️ Nourrir</button>
-    <button @click="hungryCow" class="px-3 py-1 bg-red-200 rounded">😩 Affamer</button>
+    <button @click="feedCow" class="px-3 py-1 bg-green-200 rounded">🍽️ Nourrir la vache</button>
+    <button @click="hungryCow" class="px-3 py-1 bg-red-200 rounded">😩 Affamer la vache</button>
+    <button @click="getChickens" class="px-3 py-1 bg-yellow-200 rounded">🐔 Voir les poules</button>
   </div>
 
+  <!-- Formulaire d'ajout de poule -->
+  <div x-show="token" class="mb-6">
+    <h2 class="font-bold mb-2">➕ Ajouter une nouvelle poule</h2>
+    <input type="text" x-model="newChicken.name" placeholder="Nom" class="px-2 py-1 border rounded block w-64" />
+    <input type="number" x-model.number="newChicken.age" placeholder="Âge" class="px-2 py-1 border rounded block w-64" />
+    <input type="number" x-model.number="newChicken.weight" placeholder="Poids (kg)" step="0.01"
+           class="px-2 py-1 border rounded block w-64" />
+    <button @click="addChicken" class="px-3 py-1 bg-pink-300 rounded mt-2">Ajouter 🐣</button>
+  </div>
+
+  <!-- Résultat brut -->
   <pre class="mt-4 bg-gray-100 p-2 rounded" x-text="JSON.stringify(response, null, 2)"></pre>
 
+  <!-- Liste des poules -->
+  <div x-show="chickens.length > 0" class="mt-6">
+    <h2 class="text-lg font-bold mb-2">🐔 Poules de la ferme :</h2>
+    <ul class="list-disc ml-5 space-y-1">
+      <template x-for="chicken in chickens" :key="chicken.id">
+        <li>
+          <strong x-text="chicken.name"></strong> —
+          âge : <span x-text="chicken.age"></span> an(s),
+          poids : <span x-text="chicken.weight.toFixed(2) + ' kg'"></span>
+          <span x-show="chicken.weight < 1.5">🐤</span>
+        </li>
+      </template>
+    </ul>
+  </div>
+
+  <!-- Script Alpine -->
   <script>
     function farmApp() {
       return {
         token: null,
         response: null,
+        chickens: [],
+        newChicken: {
+          name: "",
+          age: null,
+          weight: null
+        },
 
         async login() {
           try {
@@ -35,30 +91,58 @@
           }
         },
 
-        async callApi(method, url) {
+        async callApi(method, url, body = null) {
           try {
-            const res = await fetch(`http://localhost:8080${url}`, {
+            const options = {
               method,
               headers: {
                 'Authorization': `Bearer ${this.token}`
               }
-            });
-            this.response = await res.json();
+            };
+
+            if (body) {
+              options.headers['Content-Type'] = 'application/json';
+              options.body = JSON.stringify(body);
+            }
+
+            const res = await fetch(`http://localhost:8080${url}`, options);
+            return await res.json();
           } catch (err) {
-            this.response = { error: 'Erreur API', details: err.message };
+            return { error: 'Erreur API', details: err.message };
           }
         },
 
-        getCow() {
-          this.callApi('GET', '/farm/cow');
+        async getCow() {
+          this.response = await this.callApi('GET', '/farm/cow');
         },
 
-        feedCow() {
-          this.callApi('POST', '/farm/cow/feed');
+        async feedCow() {
+          this.response = await this.callApi('POST', '/farm/cow/feed');
         },
 
-        hungryCow() {
-          this.callApi('POST', '/farm/cow/hungry');
+        async hungryCow() {
+          this.response = await this.callApi('POST', '/farm/cow/hungry');
+        },
+
+        async getChickens() {
+          const data = await this.callApi('GET', '/farm/chicken');
+          this.response = data;
+          if (Array.isArray(data)) {
+            this.chickens = data;
+          }
+        },
+
+        async addChicken() {
+          const { name, age, weight } = this.newChicken;
+          if (!name || age === null || weight === null) {
+            alert("Merci de remplir tous les champs de la poule !");
+            return;
+          }
+
+          const data = await this.callApi('POST', '/farm/chicken', { name, age, weight });
+          this.response = data;
+          this.newChicken = { name: "", age: null, weight: null };
+          this.getChickens();
         }
       };
     }
