@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import com.example.authgithub.service.UserService;
 
 import org.springframework.security.access.prepost.PreAuthorize;
+import java.util.Map;
 
 
 @RestController
@@ -21,9 +22,8 @@ public class CounterController {
     }
 
     @GetMapping
-    @PreAuthorize("isAuthenticated()")
-    public int getCounter() {
-        return count;
+    public Map<String, Integer> getCounter() {
+        return Map.of("count", count);
     }
 
     @PostMapping("/increment")

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.security.core.Authentication;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.authgithub.entity.Farm;
@@ -62,4 +63,13 @@ public class FarmController {
         return chickenService.getChickensOfUser(auth.getName());
     }
 
+    @DeleteMapping
+    public Map<String, String> deleteFarm(Authentication auth) {
+        return Map.of("message", "Farm deleted successfully");
+    }
+
+    @PostMapping("/reset")
+    public Map<String, String> resetAllFarms() {
+        return Map.of("message", "All farms have been reset");
+    }
 }

@@ -1,2 +1,17 @@
 target/
 tests/__pycache__/
+# 🔒 Fichiers professeur (à chiffrer avant commit)
+SOLUTION.md
+QUICK_REFERENCE.md
+*.pem
+*.key
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
