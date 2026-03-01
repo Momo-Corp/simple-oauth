@@ -13,13 +13,13 @@ export BASE_URL="https://${CODESPACE_NAME}-8080.app.github.dev"
 
 ```
 mvn clean install
-mvn spring-boot-run
+mvn spring-boot:run
 ```
 
 # run the tests
 ```
-pytest tests/test_farm.py
-=================================== 4 passed in 0.13s
+pytest tests
+=================================== 12 passed in 0.53s
 ```
 
 # launch front-end
