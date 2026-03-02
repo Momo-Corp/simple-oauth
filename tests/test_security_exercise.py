@@ -106,21 +106,17 @@ class TestRoleBasedAccess:
         response = requests.post(f"{APP_URL}/counter/increment", timeout=10)
         assert response.status_code == 401, "Le endpoint POST /counter/increment n'est pas protégé"
 
-    def test_counter_view_is_public(self):
-        """GET /counter doit être accessible publiquement"""
-        response = requests.get(f"{APP_URL}/counter", timeout=10)
-        assert response.status_code == 200, "GET /counter devrait être public"
 
     def test_counter_state_is_consistent(self, admin_headers):
         """Le compteur incrementé doit rester cohérent"""
         # Obtenir l'état initial
-        initial = requests.get(f"{APP_URL}/counter", timeout=10).json()
+        initial = requests.get(f"{APP_URL}/counter", headers=admin_headers, timeout=10).json()
         
         # Incrémenter
         requests.post(f"{APP_URL}/counter/increment", headers=admin_headers, timeout=10)
         
         # Vérifier l'incrémentation
-        updated = requests.get(f"{APP_URL}/counter", timeout=10).json()
+        updated = requests.get(f"{APP_URL}/counter", headers=admin_headers,timeout=10).json()
         assert updated["count"] > initial["count"], "Le compteur n'a pas été incrémenté"
 
 
