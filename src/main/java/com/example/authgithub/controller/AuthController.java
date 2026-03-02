@@ -11,7 +11,7 @@ import java.util.Map;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    @Value("${my_github.pat}")
+    @Value("${MY_GITHUB_PAT}")
     private String githubToken;
 
     @PostMapping("/github")

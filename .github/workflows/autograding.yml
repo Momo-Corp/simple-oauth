@@ -2,7 +2,7 @@ name: Auto Grading (Spring Boot + Docker Compose + Pytest)
 
 on:
   push:
-    branches: [assignment]
+    branches: [jwt]
 
 jobs:
   build-and-test:
@@ -22,6 +22,8 @@ jobs:
 
       - name: Start Spring Boot
         run: |
+          export MY_GITHUB_PAT=tagada
+          export BASE_URL="https://localhost:8080"
           nohup mvn spring-boot:run > app.log 2>&1 &
           echo $! > spring-boot.pid
 
