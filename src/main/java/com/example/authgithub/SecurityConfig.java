@@ -61,7 +61,8 @@ public class SecurityConfig {
         http
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/", "/counter/**", "/index.html", "/auth/test-token", "/static/**").permitAll()
+//                        .requestMatchers("/", "/counter/**", "/index.html", "/index-github.html", "/auth/test-token", "/static/**").permitAll()
+                        .requestMatchers("/", "/counter/**", "/index.html", "/index-github.html", "/static/**").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())

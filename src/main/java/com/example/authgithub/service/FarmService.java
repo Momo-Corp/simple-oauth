@@ -31,7 +31,7 @@ public class FarmService {
         }
 
         // Sinon, créer une nouvelle ferme
-        Farm newFarm = new Farm(username, "My Farm", "Unknown Location");
+        Farm newFarm = new Farm("toto", "My Farm", "Unknown Location");
         Cow newCow = new Cow("Bessie");
         newFarm.setCow(newCow);
 
