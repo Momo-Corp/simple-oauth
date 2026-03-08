@@ -22,6 +22,7 @@ public class CounterController {
     }
 
     @GetMapping
+    @PreAuthorize("isAuthenticated()")
     public Map<String, Integer> getCounter() {
         return Map.of("count", count);
     }

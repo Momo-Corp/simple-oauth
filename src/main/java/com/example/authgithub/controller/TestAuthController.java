@@ -23,7 +23,7 @@ public class TestAuthController {
     public String getTestToken() {
         return Jwts.builder()
                 .setSubject("test-admin")
-//                .claim("authorities", List.of("ROLE_ADMIN"))
+                .claim("authorities", List.of("ROLE_ADMIN"))
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 3600000)) // 1h de validité
                 .signWith(SECRET_KEY)

@@ -2,6 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ma Ferme 🐄🐔</title>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
   <style>
@@ -25,16 +26,19 @@
     }
   </style>
 </head>
-<body x-data="farmApp()">
+<body x-data="farmApp()" x-init="checkLoginStatus()">
 
   <h1 class="text-xl font-bold mb-4">Bienvenue à la Ferme 🐮🐔</h1>
 
   <!-- Connexion -->
-  <button @click="login" class="px-4 py-2 bg-blue-500 text-white rounded">🔐 Se connecter</button>
-  <p x-text="token ? 'Token récupéré ✔️' : ''" class="mb-4 text-green-600 font-mono"></p>
+  <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.5rem;">
+    <button x-show="!loggedIn" @click="loginGithub" class="px-4 py-2 bg-black text-white rounded">Login with GitHub</button>
+    <button x-show="loggedIn" @click="logout" class="px-4 py-2 bg-gray-700 text-white rounded">Logout</button>
+  </div>
+  <p x-text="loggedIn ? ('Connecte en tant que ' + username) : 'Non connecte'" class="mb-4 text-green-600 font-mono"></p>
 
   <!-- Actions principales -->
-  <div x-show="token" class="space-x-2 mb-6">
+  <div x-show="loggedIn" class="space-x-2 mb-6">
     <button @click="getCow" class="px-3 py-1 bg-gray-200 rounded">🐄 Voir la vache</button>
     <button @click="feedCow" class="px-3 py-1 bg-green-200 rounded">🍽️ Nourrir la vache</button>
     <button @click="hungryCow" class="px-3 py-1 bg-red-200 rounded">😩 Affamer la vache</button>
@@ -42,7 +46,7 @@
   </div>
 
   <!-- Formulaire d'ajout de poule -->
-  <div x-show="token" class="mb-6">
+  <div x-show="loggedIn" class="mb-6">
     <h2 class="font-bold mb-2">➕ Ajouter une nouvelle poule</h2>
     <input type="text" x-model="newChicken.name" placeholder="Nom" class="px-2 py-1 border rounded block w-64" />
     <input type="number" x-model.number="newChicken.age" placeholder="Âge" class="px-2 py-1 border rounded block w-64" />
@@ -74,7 +78,8 @@
     const API_BASE = window.location.origin;
     function farmApp() {
       return {
-        token: null,
+        loggedIn: false,
+        username: '',
         response: null,
         chickens: [],
         newChicken: {
@@ -83,22 +88,49 @@
           weight: null
         },
 
-        async login() {
+        async checkLoginStatus() {
           try {
-            const res = await fetch('/auth/test-token');
-            this.token = await res.text();
+            const res = await fetch('/user', { credentials: 'include' });
+            if (!res.ok) {
+              this.loggedIn = false;
+              this.username = '';
+              return;
+            }
+
+            const data = await res.json();
+            this.loggedIn = true;
+            this.username = data.username || '';
           } catch (err) {
-            console.error('Erreur lors du login:', err);
+            console.error('Erreur lors de la verification de session:', err);
+            this.loggedIn = false;
+            this.username = '';
           }
+        },
+
+        loginGithub() {
+          window.location.href = window.location.origin + '/oauth2/authorization/github';
+        },
+
+        async logout() {
+          try {
+            await fetch('/logout', { method: 'POST', credentials: 'include' });
+          } catch (err) {
+            console.error('Erreur lors du logout:', err);
+          }
+
+          this.loggedIn = false;
+          this.username = '';
+          this.response = null;
+          this.chickens = [];
+          window.location.href = '/';
         },
 
         async callApi(method, url, body = null) {
           try {
             const options = {
               method,
-              headers: {
-                'Authorization': `Bearer ${this.token}`
-              }
+              credentials: 'include',
+              headers: {}
             };
 
             if (body) {
@@ -107,6 +139,11 @@
             }
 
             const res = await fetch(`${url}`, options);
+            if (res.status === 401) {
+              this.loggedIn = false;
+              this.username = '';
+              return { error: 'Non authentifie. Connectez-vous avec GitHub.' };
+            }
             return await res.json();
           } catch (err) {
             return { error: 'Erreur API', details: err.message };
